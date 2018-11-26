@@ -160,59 +160,64 @@ function bandsInTown() {
 
 	var queryUrl = "https://rest.bandsintown.com/artists/" + searchResult + "/events?app_id=codingbootcamp"
 
-	axios.get(queryUrl).then(
-		function(response) {
-			data = response.data
-			dataLength = response.data.length
+	if (searchResult === "") {
+		console.log("Please put in a band/artist")
+	} else {
+			axios.get(queryUrl).then(
+				function(response) {
+					data = response.data
+					dataLength = response.data.length
 
-			if (dataLength > 0) {
-				for (var j = 0; j < dataLength; j++) {
+					if (dataLength > 0) {
+						for (var j = 0; j < dataLength; j++) {
 
-					console.log("======================")
-					console.log("The venue is at " + data[j].venue.name);
+							console.log("======================")
+							console.log("The venue is at " + data[j].venue.name);
 
-					if (data[j].venue.region === "") {
-						console.log("The location is at: " + data[j].venue.city + ", " + data[j].venue.country);
-					} else {
-						console.log("The location is at: " + data[j].venue.city + ", " + data[j].venue.region + ", " + data[j].venue.country);
-					}
+							if (data[j].venue.region === "") {
+								console.log("The location is at: " + data[j].venue.city + ", " + data[j].venue.country);
+							} else {
+								console.log("The location is at: " + data[j].venue.city + ", " + data[j].venue.region + ", " + data[j].venue.country);
+							}
 
-					date = new Date(data[j].datetime);
+							date = new Date(data[j].datetime);
 
-					year = date.getFullYear();
-					month = date.getMonth()+1;
-					dt = date.getDate();
-					console.log("The date is: " + month + "/" + dt + "/" + year);
-					fs.appendFile("log.txt", JSON.stringify(data[j], null, 2), function(err) {
+							year = date.getFullYear();
+							month = date.getMonth()+1;
+							dt = date.getDate();
+							console.log("The date is: " + month + "/" + dt + "/" + year);
+							fs.appendFile("log.txt", JSON.stringify(data[j], null, 2), function(err) {
 
-						// If the code experiences any errors it will log the error to the console.
-						if (err) {
-						  return console.log(err);
+								// If the code experiences any errors it will log the error to the console.
+								if (err) {
+								  return console.log(err);
+								}
+							});
 						}
-					});
-				}
-				console.log("log.txt was updated!");
-			} else {
-				console.log("Uh oh, there doesn't look like there's any upcoming concerts from " + artist)
-			}
-		}).catch(function(error) {
-    if (error.response) {
-    	console.log("error alert")
-      // The request was made and the server responded with a status code
-      // that falls out of the range of 2xx
-      console.log(error.response.data);
-      console.log(error.response.status);
-      console.log(error.response.headers);
-    } else if (error.request) {
-      // The request was made but no response was received
-      // `error.request` is an object that comes back with details pertaining to the error that occurred.
-      console.log(error.request);
-    } else {
-      // Something happened in setting up the request that triggered an Error
-      console.log("Error", error.message);
-    }
-    console.log(error.config);
-  });
+						console.log("log.txt was updated!");
+					} else {
+						console.log("Uh oh, there doesn't look like there's any upcoming concerts from " + artist)
+					}
+				}).catch(function(error) {
+		    if (error.response) {
+		    	console.log("error alert")
+		      // The request was made and the server responded with a status code
+		      // that falls out of the range of 2xx
+		      console.log(error.response.data);
+		      console.log(error.response.status);
+		      console.log(error.response.headers);
+		    } else if (error.request) {
+		      // The request was made but no response was received
+		      // `error.request` is an object that comes back with details pertaining to the error that occurred.
+		      console.log(error.request);
+		    } else {
+		      // Something happened in setting up the request that triggered an Error
+		      console.log("Error", error.message);
+		    }
+		    console.log(error.config);
+		  }
+		);
+	}
 }
 
 function doWhatItSays() {
