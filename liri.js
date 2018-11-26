@@ -33,7 +33,7 @@ function omdb() {
 	searchResult = searchResult.slice(0, -1)
 
 
-	var queryUrl = "http://www.omdbapi.com/?t=" + movie + "&y=&plot=short&apikey=trilogy";
+	var queryUrl = "http://www.omdbapi.com/?t=" + searchResult + "&y=&plot=short&apikey=trilogy";
 	var nobodyUrl = "http://www.omdbapi.com/?t=mr+nobody&y=&plot=short&apikey=trilogy"
 
 	console.log(queryUrl);
@@ -62,6 +62,18 @@ function omdbResults(url) {
 	  	} else {
 	  		console.log(data.Error)
 	  	}
+
+	  	fs.appendFile("log.txt", JSON.stringify(data, null, 2), function(err) {
+
+	  	  // If the code experiences any errors it will log the error to the console.
+	  	  if (err) {
+	  	    return console.log(err);
+	  	  }
+
+	  	  // Otherwise, it will print: "movies.txt was updated!"
+	  	  console.log("log.txt was updated!");
+
+	  	});
 	 	}
 	)
 };
@@ -88,6 +100,18 @@ function spotThisSong() {
 			// 		console.log(j)
 			// 		console.log("The Artist's name is",data.tracks.items[j].album.artists[0].name)
 			// }
+
+			fs.appendFile("log.txt", JSON.stringify(data.tracks.items[9], null, 2), function(err) {
+
+				// If the code experiences any errors it will log the error to the console.
+				if (err) {
+				  return console.log(err);
+				}
+
+				// Otherwise, it will print: "movies.txt was updated!"
+				console.log("log.txt was updated!");
+
+			});
 		})
 	} else {
 		spotify.search({ type: 'track', query: searchResult }, function(err, data) {
@@ -109,7 +133,16 @@ function spotThisSong() {
 					} else {
 						console.log("Listen a preview:",songData[j].preview_url)
 					}
+
+					fs.appendFile("log.txt", JSON.stringify(songData[j], null, 2), function(err) {
+
+						// If the code experiences any errors it will log the error to the console.
+						if (err) {
+						  return console.log(err);
+						}
+					});
 				}
+				console.log("log.txt was updated!");
 			} else {
 				console.log("Looks like we can't find the song", searchResult)
 			}
@@ -150,7 +183,15 @@ function bandsInTown() {
 					month = date.getMonth()+1;
 					dt = date.getDate();
 					console.log("The date is: " + month + "/" + dt + "/" + year);
+					fs.appendFile("log.txt", JSON.stringify(data[j], null, 2), function(err) {
+
+						// If the code experiences any errors it will log the error to the console.
+						if (err) {
+						  return console.log(err);
+						}
+					});
 				}
+				console.log("log.txt was updated!");
 			} else {
 				console.log("Uh oh, there doesn't look like there's any upcoming concerts from " + artist)
 			}
