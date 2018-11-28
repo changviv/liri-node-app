@@ -49,13 +49,17 @@ function omdbResults(url) {
 	axios.get(url).then(
 	  function(response) {
 	  	data = response.data
-
 	  	if (data.Response === "True") {
 	  		console.log("Release Year:", data.Year);
 	  		console.log("The Title:", data.Title)
 	  		console.log("Release Year:", data.Year);
 	  		console.log("Imdb Rating:", data.imdbRating);
-	  		console.log("Rotten Tomatoes Rating:", data.Ratings[1].Value);
+	  		console.log("The Country:", data.Country)
+	  		if (data.Ratings.length > 1) {
+	  			console.log("Rotten Tomatoes Rating:", data.Ratings[1].Value);
+	  		} else {
+	  			console.log("Only IMDB Rating is available:", data.Ratings[0].Value);
+	  		}
 	  		console.log("The Language:", data.Language);
 	  		console.log("The Plot:", data.Plot);
 	  		console.log("The Actors:", data.Actors);
@@ -64,15 +68,10 @@ function omdbResults(url) {
 	  	}
 
 	  	fs.appendFile("log.txt", JSON.stringify(data, null, 2), function(err) {
-
-	  	  // If the code experiences any errors it will log the error to the console.
 	  	  if (err) {
 	  	    return console.log(err);
 	  	  }
-
-	  	  // Otherwise, it will print: "movies.txt was updated!"
 	  	  console.log("log.txt was updated!");
-
 	  	});
 	 	}
 	)
@@ -102,15 +101,10 @@ function spotThisSong() {
 			// }
 
 			fs.appendFile("log.txt", JSON.stringify(data.tracks.items[9], null, 2), function(err) {
-
-				// If the code experiences any errors it will log the error to the console.
 				if (err) {
 				  return console.log(err);
 				}
-
-				// Otherwise, it will print: "movies.txt was updated!"
 				console.log("log.txt was updated!");
-
 			});
 		})
 	} else {
@@ -135,8 +129,6 @@ function spotThisSong() {
 					}
 
 					fs.appendFile("log.txt", JSON.stringify(songData[j], null, 2), function(err) {
-
-						// If the code experiences any errors it will log the error to the console.
 						if (err) {
 						  return console.log(err);
 						}
@@ -187,8 +179,6 @@ function bandsInTown() {
 							dt = date.getDate();
 							console.log("The date is: " + month + "/" + dt + "/" + year);
 							fs.appendFile("log.txt", JSON.stringify(data[j], null, 2), function(err) {
-
-								// If the code experiences any errors it will log the error to the console.
 								if (err) {
 								  return console.log(err);
 								}
@@ -222,19 +212,12 @@ function bandsInTown() {
 
 function doWhatItSays() {
 	fs.readFile("random.txt", "utf8", function(error, data) {
-
-	  // If the code experiences any errors it will log the error to the console.
 	  if (error) {
 	    return console.log(error);
 	  }
-
-	  // We will then print the contents of data
 	  console.log(data);
 
-	  // Then split it by commas (to make it more readable)
 	  var dataArr = data.split(",");
-
-	  // We will then re-display the content as an array for later use.
 	  console.log(dataArr);
 
 	  action = dataArr[0]
