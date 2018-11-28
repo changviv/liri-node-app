@@ -4,7 +4,7 @@ var keys = require("./keys.js");
 var Spotify = require('node-spotify-api');
 var fs = require("fs");
 var spotify = new Spotify(keys.spotify);
-
+var moment = require("moment")
 var action = process.argv[2]
 var allArgs = process.argv
 var searchResult = "";
@@ -174,10 +174,10 @@ function bandsInTown() {
 
 							date = new Date(data[j].datetime);
 
-							year = date.getFullYear();
-							month = date.getMonth()+1;
-							dt = date.getDate();
-							console.log("The date is: " + month + "/" + dt + "/" + year);
+							var momentObj = moment(date);
+							var momentString = momentObj.format('MM/DD/YYYY');
+
+							console.log("The date is:", momentString);
 							fs.appendFile("log.txt", JSON.stringify(data[j], null, 2), function(err) {
 								if (err) {
 								  return console.log(err);
