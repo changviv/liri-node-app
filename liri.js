@@ -36,8 +36,6 @@ function omdb() {
 	var queryUrl = "http://www.omdbapi.com/?t=" + searchResult + "&y=&plot=short&apikey=trilogy";
 	var nobodyUrl = "http://www.omdbapi.com/?t=mr+nobody&y=&plot=short&apikey=trilogy"
 
-	console.log(queryUrl);
-
 	if (searchResult === "") {
 		omdbResults(nobodyUrl)
 	} else {
