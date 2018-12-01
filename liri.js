@@ -9,7 +9,8 @@ var action = process.argv[2]
 var allArgs = process.argv
 var searchResult = "";
 var artist = "";
-
+var showData = [];
+var divider = "\n------------------------------------------------------------\n\n";
 
 switch(action) {
     case "movie-this":
@@ -48,24 +49,36 @@ function omdbResults(url) {
 	  function(response) {
 	  	data = response.data
 	  	if (data.Response === "True") {
-	  		console.log("Release Year:", data.Year);
-	  		console.log("The Title:", data.Title)
-	  		console.log("Release Year:", data.Year);
-	  		console.log("Imdb Rating:", data.imdbRating);
-	  		console.log("The Country:", data.Country)
+	  		console.log("Release Year: ", data.Year);
+	  		console.log("The Title: ", data.Title)
+	  		console.log("Imdb Rating: ", data.imdbRating);
+	  		console.log("The Country: ", data.Country)
 	  		if (data.Ratings.length > 1) {
-	  			console.log("Rotten Tomatoes Rating:", data.Ratings[1].Value);
+	  			console.log("Rotten Tomatoes Rating: ", data.Ratings[1].Value);
+	  			var rottenRating = data.Ratings[1].Value
 	  		} else {
-	  			console.log("Only IMDB Rating is available:", data.Ratings[0].Value);
+	  			console.log("Only IMDB Rating is available: ", data.Ratings[0].Value);
+	  			rottenRating = data.Ratings[0].Value
 	  		}
-	  		console.log("The Language:", data.Language);
-	  		console.log("The Plot:", data.Plot);
-	  		console.log("The Actors:", data.Actors);
+	  		console.log("The Language: ", data.Language);
+	  		console.log("The Plot: ", data.Plot);
+	  		console.log("The Actors: ", data.Actors);
 	  	} else {
 	  		console.log(data.Error)
 	  	}
 
-	  	fs.appendFile("log.txt", JSON.stringify(data, null, 2), function(err) {
+	  	showData = [
+	  		"Release Year: " + data.Year,
+	  		"The Title: " + data.Title,
+	  		"Imdb Rating: " + data.imdbRating,
+	  		"Rotten Tomatoes Rating: " + rottenRating,
+	  		"The Country: " + data.Country,
+	  		"The Language: " + data.Language,
+	  		"The Plot: " + data.Plot,
+	  		"The Actors: " + data.Actors
+	  	].join("\n\n");
+
+	  	fs.appendFile("log.txt", showData + divider, function(err) {
 	  	  if (err) {
 	  	    return console.log(err);
 	  	  }
@@ -76,6 +89,8 @@ function omdbResults(url) {
 };
 
 function spotThisSong() {
+
+
 	for (var i = 3; i < allArgs.length; i++) {
 		searchResult += (allArgs[i] + " ")
 	}
@@ -83,7 +98,7 @@ function spotThisSong() {
 	searchResult = searchResult.slice(0, -1)
 
 	if (searchResult === "") {
-		spotify.search({ type: 'track', query: 'The Sign' }, function(err, data) {
+		spotify.search({ type: 'track', query:  'The Sign' }, function(err, data) {
 		  if (err) {
 		    return console.log('Error occurred: ' + err);
 		  }
@@ -91,14 +106,21 @@ function spotThisSong() {
 			console.log("The Artist's name is", data.tracks.items[9].album.artists[0].name)
 			console.log("The Album is", data.tracks.items[9].album.name)
 			console.log("The song name is", data.tracks.items[9].name)
-			console.log("Listen a preview:", data.tracks.items[9].preview_url)
+			console.log("Listen a preview: ", data.tracks.items[9].preview_url)
 			// for (var j = 0; j < data.tracks.items.length; j++) {
 			// 		console.log("======================")
 			// 		console.log(j)
 			// 		console.log("The Artist's name is",data.tracks.items[j].album.artists[0].name)
 			// }
 
-			fs.appendFile("log.txt", JSON.stringify(data.tracks.items[9], null, 2), function(err) {
+			showData = [
+				"The Artist's name is: " + data.tracks.items[9].album.artists[0].name,
+				"The Album is: " + data.tracks.items[9].album.name,
+				"The song name is: " + data.tracks.items[9].name,
+				"Listen a preview: " + data.tracks.items[9].preview_url
+			].join("\n\n");
+
+			fs.appendFile("log.txt", showData + divider, function(err) {
 				if (err) {
 				  return console.log(err);
 				}
@@ -106,9 +128,9 @@ function spotThisSong() {
 			});
 		})
 	} else {
-		spotify.search({ type: 'track', query: searchResult }, function(err, data) {
+		spotify.search({ type:  'track', query:  searchResult }, function(err, data) {
 			if (err) {
-			  return console.log('Error occurred: ' + err);
+			  return console.log('Error occurred:  ' + err);
 			}
 
 			var songData = data.tracks.items
@@ -121,12 +143,21 @@ function spotThisSong() {
 					console.log("The Artist's name is",songData[j].album.artists[0].name)
 					console.log("The Album is",songData[j].album.name)
 					if (songData[j].preview_url === null) {
-						console.log("There's no preview but you can listen to it on Spotify:",songData[j].album.external_urls.spotify)
+						console.log("There's no preview but you can listen to it on Spotify: ",songData[j].album.external_urls.spotify)
+						var preview = songData[j].album.external_urls.spotify
 					} else {
-						console.log("Listen a preview:",songData[j].preview_url)
+						console.log("Listen a preview: ",songData[j].preview_url)
+						preview = songData[j].preview_url
 					}
 
-					fs.appendFile("log.txt", JSON.stringify(songData[j], null, 2), function(err) {
+					showData = [
+						"The Artist's name is: " + data.tracks.items[j].album.artists[0].name,
+						"The Album is: " + data.tracks.items[j].album.name,
+						"The song name is: " + data.tracks.items[j].name,
+						"Listen a preview: " + preview
+					].join("\n\n");
+
+					fs.appendFile("log.txt", showData + divider, function(err) {
 						if (err) {
 						  return console.log(err);
 						}
@@ -165,9 +196,11 @@ function bandsInTown() {
 							console.log("The venue is at " + data[j].venue.name);
 
 							if (data[j].venue.region === "") {
-								console.log("The location is at: " + data[j].venue.city + ", " + data[j].venue.country);
+								console.log("The location is at:  " + data[j].venue.city + ", " + data[j].venue.country);
+								venue = data[j].venue.city + ", " + data[j].venue.country
 							} else {
-								console.log("The location is at: " + data[j].venue.city + ", " + data[j].venue.region + ", " + data[j].venue.country);
+								venue = data[j].venue.city + ", " + data[j].venue.region + ", " + data[j].venue.country
+								console.log("The location is at:  " + data[j].venue.city + ", " + data[j].venue.region + ", " + data[j].venue.country);
 							}
 
 							date = new Date(data[j].datetime);
@@ -175,8 +208,15 @@ function bandsInTown() {
 							var momentObj = moment(date);
 							var momentString = momentObj.format('MM/DD/YYYY');
 
-							console.log("The date is:", momentString);
-							fs.appendFile("log.txt", JSON.stringify(data[j], null, 2), function(err) {
+							console.log("The date is: ", momentString);
+
+							showData = [
+								"The venue is at " + data[j].venue.name,
+								"The location is at: " + venue,
+								"The date is: " + momentString
+							].join("\n\n");
+
+							fs.appendFile("log.txt", showData + divider, function(err) {
 								if (err) {
 								  return console.log(err);
 								}
